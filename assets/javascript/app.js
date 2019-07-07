@@ -12,10 +12,10 @@ $(document).ready(function()
 
     for (i=0; i < topics.length; i++)
     {
-       $("#topic-tags").append("<button id='" + topics[i] + "' class='uga-button mx-1 mt-1'>" + topics[i] + "</button> "); 
+       $("#topic-tags").append("<button id='" + topics[i] + "' class='uga-button mx-1 mt-1 btn btn-danger btn-sm'>" + topics[i] + "</button> "); 
     }
 
-    $(".uga-button").on("click", function()
+    $("#topic-tags").on("click", ".uga-button", function()
     {
         //https://api.giphy.com/v1/gifs/search?api_key=4IcGOPwLJy9ELkZbSwUKgW98kD5UVkQi&q=&limit=25&offset=0&rating=G&lang=en
       var baseURL = "https://api.giphy.com/v1/gifs/search?api_key=4IcGOPwLJy9ELkZbSwUKgW98kD5UVkQi&q=";
@@ -24,7 +24,7 @@ $(document).ready(function()
 
       var searchCriteria = $(this).text();
 
-      var queryURL = baseURL +"&q="+ replaceChar(searchCriteria, " ", "%20") + "&limit=" + limit + "&offset=0&rating-G&lang=en&";
+      var queryURL = baseURL +"&q="+ searchCriteria + "&limit=" + limit + "&offset=0&rating-G&lang=en&";
         
         $.ajax({
             url: queryURL,
@@ -37,21 +37,71 @@ $(document).ready(function()
    
           for (i = 0; i < response.data.length; i++)
           {
-            var imageUrl = response.data[i].images.original.url;
+            var imageUrl = response.data[i].images.original_still.url;
             var imageTitle = response.data[i].title;
-
+            var gifId = response.data[i].id;
+            var ugaImagesRating = response.data[i].rating.toUpperCase();
             var ugaImages = $("<img>");
+            var ugaImagesDiv = $("<div>");
+            var ugaImagesRatingP = $("<p>");
 
             ugaImages.attr("src", imageUrl);
             ugaImages.attr("alt", imageTitle);
-            ugaImages.attr("width", "200");
-            ugaImages.attr("class", "img-fluid");
+            ugaImages.attr("id", gifId);
+            ugaImages.attr("max-width", "300px");
 
-            $("#uga-football-images").prepend(ugaImages);
+            ugaImages.attr("class", "img-fluid gif");
+            ugaImages.attr("animated", false);
+
+            ugaImagesDiv.attr("class", "card d-sm-block text-center pr-1 pl-1 pt-1 mt-2 ");
+            ugaImagesRatingP.text("Rating: " + ugaImagesRating);
+
+            $(ugaImagesDiv).append(ugaImages);
+            $(ugaImagesDiv).append(ugaImagesRatingP);
+            $("#uga-football-images").prepend(ugaImagesDiv);
           }
           
         });
 
     });
-        
+
+    $("#uga-football-images").on("click", "img", function()
+    {
+      console.log("Image clicked!");
+
+      var src = $(this).attr("src");
+      var animated = $(this).attr("animated");
+      console.log(src);
+      console.log(animated);
+
+      if (animated == "false")
+      {
+        $(this).attr('src', src.replace(/\_s.gif/i, ".gif"))
+        $(this).attr('animated', "true");
+      }
+      else
+      {
+        $(this).attr('src', src.replace(/\.gif/i, "_s.gif"))
+        $(this).attr('animated', "false");
+      }
     });
+
+    $(".new-tag-button").on("click", function()
+    {
+      console.log("New tag has been added!");
+      var newTag = $(".new-tag-box").val();
+      console.log(newTag);
+
+      topics.push(newTag);
+      console.log(topics);
+
+      $("#topic-tags").empty();
+
+      for (i=0; i < topics.length; i++)
+      {
+        $("#topic-tags").append("<button id='" + topics[i] + "' class='uga-button mx-1 mt-1'>" + topics[i] + "</button> "); 
+      }
+
+      $(".new-tag-box").val("");
+    });
+});
