@@ -4,12 +4,6 @@ $(document).ready(function()
 
     topics = ["UGA football", "Georgia Bulldogs", "Georgia Bulldawgs", "University of Georgia", "SEC football", "Kirby Smart", "Uga", "Athens", "Athens, Georgia", "UGA", "Georgia football", "Commit to the G", "Coach Smart", "Coach Kirby Smart", "Sanford Stadium", "Between the hedges", "Saturday in Athens"];
 
-    function replaceChar (string, fromChar, toChar)
-    {
-        var newString = string.replace(fromChar,toChar);
-        return newString;
-    }
-
     for (i=0; i < topics.length; i++)
     {
        $("#topic-tags").append("<button id='" + topics[i] + "' class='uga-button mx-1 mt-1 btn btn-danger btn-sm'>" + topics[i] + "</button> "); 
@@ -17,7 +11,7 @@ $(document).ready(function()
 
     $("#topic-tags").on("click", ".uga-button", function()
     {
-        //https://api.giphy.com/v1/gifs/search?api_key=4IcGOPwLJy9ELkZbSwUKgW98kD5UVkQi&q=&limit=25&offset=0&rating=G&lang=en
+
       var baseURL = "https://api.giphy.com/v1/gifs/search?api_key=4IcGOPwLJy9ELkZbSwUKgW98kD5UVkQi&q=";
 
       var limit = 10;
