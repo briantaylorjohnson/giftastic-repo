@@ -71,18 +71,28 @@ $(document).ready(function()
 
       var src = $(this).attr("src");
       var animated = $(this).attr("animated");
-      console.log(src);
-      console.log(animated);
 
       if (animated == "false")
       {
         $(this).attr('src', src.replace(/\_s.gif/i, ".gif"))
         $(this).attr('animated', "true");
+
+        src = $(this).attr("src");
+        console.log("New SRC: " + src);
+
+        animated = $(this).attr("animated");
+        console.log("Is animated: " + animated);
       }
       else
       {
         $(this).attr('src', src.replace(/\.gif/i, "_s.gif"))
         $(this).attr('animated', "false");
+
+        src = $(this).attr("src");
+        console.log("New SRC: " + src);
+
+        animated = $(this).attr("animated");
+        console.log("Is animated: " + animated);
       }
     });
 
@@ -99,7 +109,7 @@ $(document).ready(function()
 
       for (i=0; i < topics.length; i++)
       {
-        $("#topic-tags").append("<button id='" + topics[i] + "' class='uga-button mx-1 mt-1'>" + topics[i] + "</button> "); 
+        $("#topic-tags").append("<button id='" + topics[i] + "' class='uga-button mx-1 mt-1 btn btn-danger btn-sm'>" + topics[i] + "</button> "); 
       }
 
       $(".new-tag-box").val("");
