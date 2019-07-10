@@ -2,7 +2,16 @@
 $(document).ready(function()
 {
   // Initial array of UGA football topics/tags which will be used to build the tag button well at the top of page
-  topics = ["UGA football", "Georgia Bulldogs", "Georgia Bulldawgs", "University of Georgia", "SEC football", "Kirby Smart", "Uga", "Athens", "Athens, Georgia", "UGA", "Georgia football", "Commit to the G", "Coach Smart", "Coach Kirby Smart", "Sanford Stadium", "Between the hedges", "Saturday in Athens"];
+  var topics = ["UGA football", "Georgia Bulldogs", "Georgia Bulldawgs", "University of Georgia", "SEC football", "Kirby Smart", "Uga", "Athens", "Athens, Georgia", "UGA", "Georgia football", "Commit to the G", "Coach Smart", "Coach Kirby Smart", "Sanford Stadium", "Between the hedges", "Saturday in Athens"];
+
+  // This counts the number of times a tag button is clicked consecutively
+  var buttonClickCounter = 0;
+
+  // This captures the text of the last button clicked
+  var lastButtonClicked = "";
+
+  // This controls the pagination of gif images returned when a button is clicked consecutively
+  var page = 0;
 
   // Function which will build/update the tag button well at the top of page using the topics array when invoked
   function buildUpdateTagButtonsWell()
@@ -17,7 +26,7 @@ $(document).ready(function()
 
   // Function which will make the Ajax call to the Giphy API Search procedure
   // Argument consists of the topic/keywords search criteria string and the number of gif images which should be returned
-  function getGifsByKeywords (keywords, limit)
+  function getGifsByKeywords (keywords, limit, offset)
   {
     // Base URL for the Giphy API Search procedure and the API Key query string parameter
     var baseURL = "https://api.giphy.com/v1/gifs/search?api_key=4IcGOPwLJy9ELkZbSwUKgW98kD5UVkQi&q=";
@@ -25,8 +34,8 @@ $(document).ready(function()
     // Sets the topic/keywords in the function argument to the searchCriteria variable
     var searchCriteria = keywords;
 
-    // Builds the full query URL to invoke the Giphy API Search procedure: base URL + search criteria + number of results
-    var queryURL = baseURL +"&q="+ searchCriteria + "&limit=" + limit + "&offset=0&rating-G&lang=en&";
+    // Builds the full query URL to invoke the Giphy API Search procedure: base URL + search criteria + number of results + page/offset
+    var queryURL = baseURL +"&q="+ searchCriteria + "&limit=" + limit + "&offset=" + offset + "&rating-G&lang=en&";
 
     // Ajax call to be made using the query URL and the HTTP GET method for the Giphy API Search procedure
     $.ajax(
@@ -95,7 +104,33 @@ $(document).ready(function()
   // Tag button text is used for the keywords/topics to search by; the result set of gif images is limited to ten per the requirements
   $("#topic-tags").on("click", ".uga-button", function()
   {
-    getGifsByKeywords($(this).text(), 10);
+    // Conditional which checks to see if a tag button was clicked consecutively
+    // If so, it updates the pagination variable so that the next ten results for that tag button are returned -- not the same ten
+    if (lastButtonClicked == $(this).text())
+    {
+      // Increments for consecutive clicks on the same tag button
+      buttonClickCounter++;
+
+      // Updates pagination of gif images returned so that consecutive clicks of the same tag button do not return the same images
+      page = buttonClickCounter * 10;
+    }
+
+    // Conditional which executes if the clicked tag button was not clicked consecutively more than once
+    else
+    {
+      // Sets the last button clicked variable so that future tag button clicks can be evaluated
+      lastButtonClicked = $(this).text();
+
+      // Ensures that the button click counter returns to zero for new tag buttons that are clicked
+      buttonClickCounter = 0;
+
+      // Sets the page to zero so that the first ten gif image results are returned 
+      page = 0;
+    }
+
+    // Invokes the Giphy API Search procedure to retrieve the gif images to be displayed to the user
+    getGifsByKeywords($(this).text(), 10, page);
+    
   });
 
   //jQuery listener which plays/stops the animation of gif images when clicked
