@@ -29,7 +29,7 @@ $(document).ready(function()
   function getGifsByKeywords (keywords, limit, offset)
   {
     // Base URL for the Giphy API Search procedure and the API Key query string parameter
-    var baseURL = "https://api.giphy.com/v1/gifs/search?api_key=4IcGOPwLJy9ELkZbSwUKgW98kD5UVkQi&q=";
+    var baseURL = "https://api.giphy.com/v1/gifs/search?api_key=4IcGOPwLJy9ELkZbSwUKgW98kD5UVkQi";
 
     // Sets the topic/keywords in the function argument to the searchCriteria variable
     var searchCriteria = keywords;
